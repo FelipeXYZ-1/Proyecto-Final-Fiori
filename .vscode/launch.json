@@ -16,7 +16,7 @@
       ],
       "args": [
         "--open",
-        "test/flpSandbox.html"
+        "index.html"
       ],
       "console": "internalConsole",
       "internalConsoleOptions": "openOnSessionStart",

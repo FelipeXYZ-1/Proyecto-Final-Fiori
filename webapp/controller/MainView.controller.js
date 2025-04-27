@@ -30,7 +30,7 @@ sap.ui.define([
       // Aseguramos newUser vacío
       oModel.setProperty("/newUser", {
         id: "", typeDocument: "", numberDocument: "", firstName: "", lastName: "",
-        birthDate: null, placeBirth: "", nationality: "", genre: "", civilStatus: "",
+        birthDate: "", placeBirth: "", nationality: "", genre: "", civilStatus: "",
         country: "", province: "", region: "", address: "", postalCode: "",
         phoneNumber: "", email: ""
       });
@@ -108,12 +108,12 @@ sap.ui.define([
         if (!oNew[sField]) {
           // 1. Construir la clave i18n para la etiqueta del campo
           const sLabelKey = sField + "Label";
-          
+
           // 2. Obtener el texto traducido de la etiqueta
           let sFieldLabel = oResourceBundle.getText(sLabelKey)
 
           // 3. Obtener el mensaje de error y pasarle la etiqueta traducida como parámetro
-          const sMsg = oResourceBundle.getText("requiredFieldMsg", [sFieldLabel]); 
+          const sMsg = oResourceBundle.getText("requiredFieldMsg", [sFieldLabel]);
 
           MessageToast.show(sMsg);
           return; // Detener si falta un campo
@@ -131,7 +131,7 @@ sap.ui.define([
       // Limpiar formulario
       oModel.setProperty("/newUser", {
         id: "", typeDocument: "", numberDocument: "", firstName: "", lastName: "",
-        birthDate: null, placeBirth: "", nationality: "", genre: "", civilStatus: "",
+        birthDate: "", placeBirth: "", nationality: "", genre: "", civilStatus: "",
         country: "", province: "", region: "", address: "", postalCode: "",
         phoneNumber: "", email: ""
       });
@@ -182,73 +182,110 @@ sap.ui.define([
     },
 
     /**
-     * Exporta la lista de usuarios a CSV.
-     */
+         * Exporta la lista de usuarios a CSV (Versión Definitiva y Limpia).
+         */
     onExportCsv: function () {
-      // (Usando el código mejorado de la respuesta anterior con delimitador ';')
-      const oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
-      var oModel = this.getView().getModel("userModel") || this.getOwnerComponent().getModel("userModel");
+      // Obtener ResourceBundle para mensajes traducidos
+      const oResourceBundle = this.getView().getModel("i18n")?.getResourceBundle();
+      // Helper para mostrar mensajes (usa i18n si está disponible)
+      const fnShowMessage = (sMsgKey, sDefaultText) => {
+        const sMsg = oResourceBundle ? oResourceBundle.getText(sMsgKey) : sDefaultText;
+        MessageToast.show(sMsg);
+      };
+
+      // Obtener Modelo y Datos
+      const oModel = this.getView().getModel("userModel") || this.getOwnerComponent().getModel("userModel");
       if (!oModel) {
-        MessageToast.show(oResourceBundle.getText("errorModelNotFoundMsg"));
+        fnShowMessage("errorModelNotFoundMsg", "Error: User model not found.");
         return;
       }
-      var aUsers = oModel.getProperty("/users");
+      // Obtener una COPIA de los datos para no modificar el modelo original accidentalmente
+      const aUsers = oModel.getProperty("/users") ? JSON.parse(JSON.stringify(oModel.getProperty("/users"))) : [];
 
       if (!aUsers || !aUsers.length) {
-        MessageToast.show(oResourceBundle.getText("noUsersToExportMsg"));
+        fnShowMessage("noUsersToExportMsg", "No users to export");
         return;
       }
 
-      var aHeaders = [
+      // 1. Definir Cabeceras (claves del modelo)
+      const aHeaders = [
         "id", "typeDocument", "numberDocument", "firstName", "lastName",
         "birthDate", "placeBirth", "nationality", "genre", "civilStatus",
         "country", "province", "region", "address", "postalCode",
         "phoneNumber", "email"
       ];
-      var sDelimiter = ";";
-      var sCsvContent = "";
-      sCsvContent += "\ufeff"; // BOM
 
-      var fnQuoteField = function (sField) {
-        var sValue = sField === null || sField === undefined ? "" : String(sField);
+      const sDelimiter = ";"; // Punto y coma para compatibilidad Excel
+      let sCsvContent = "\ufeff"; // BOM para UTF-8 Excel
+
+      // 2. Función robusta para formatear y escapar celdas CSV
+      const fnFormatCell = (value) => {
+        let sValue = (value === null || value === undefined) ? "" : String(value);
         // Escapar comillas dobles internas reemplazándolas por dos comillas dobles
         sValue = sValue.replace(/"/g, '""');
-        // Encerrar el campo entre comillas dobles
+        // Siempre encerrar el valor entre comillas dobles
         return '"' + sValue + '"';
       };
 
-      sCsvContent += aHeaders.map(fnQuoteField).join(sDelimiter) + "\r\n"; // Cabecera
+      // 3. Añadir Fila de Cabecera (con claves i18n si las tuvieras para cabeceras)
+      // Por simplicidad, usamos las claves técnicas como cabeceras aquí
+      sCsvContent += aHeaders.map(sHeader => fnFormatCell(sHeader)).join(sDelimiter) + "\r\n";
 
-      aUsers.forEach(function (oUser) { // Datos
-        var aValues = aHeaders.map(function (sKey) {
-          var vValue = oUser[sKey];
-          // Formatear fechas si existen
-          if (vValue instanceof Date) {
-            // Puedes ajustar el formato si lo necesitas, ej: dd/MM/yyyy
-            vValue = vValue.toLocaleDateString('es-ES'); // O 'en-US', o el formato que prefieras
+      // 4. Añadir Filas de Datos
+      aUsers.forEach(oUser => {
+        const aRow = aHeaders.map(sKey => {
+          let vValue = oUser[sKey];
+
+          // Formateo específico para la fecha a YYYY-MM-DD
+          if (sKey === 'birthDate') {
+            // Si es un objeto Date válido
+            if (vValue instanceof Date && !isNaN(vValue)) {
+              vValue = vValue.getFullYear() + "-" +
+                ("0" + (vValue.getMonth() + 1)).slice(-2) + "-" +
+                ("0" + vValue.getDate()).slice(-2);
+            }
+            // Si es un string que parece fecha (YYYY-MM-DD), usarlo tal cual.
+            // Si es null/undefined/otro, se convertirá a "" en fnFormatCell.
+            else if (typeof vValue !== 'string' || !/^\d{4}-\d{2}-\d{2}/.test(vValue)) {
+              // Si no es Date ni string YYYY-MM-DD, forzar a vacío
+              vValue = null;
+            }
           }
-          // Obtener valor como string (maneja null/undefined) y pasarlo por la función de escape/comillado
-          return fnQuoteField(vValue);
+          // Para otros campos, simplemente usar el valor
+          return fnFormatCell(vValue); // Formatear y escapar celda
         });
-        sCsvContent += aValues.join(sDelimiter) + "\r\n";
+        sCsvContent += aRow.join(sDelimiter) + "\r\n";
       });
 
-      // Descarga
+      // 5. Crear y Descargar Blob (protegido)
       try {
-        var oBlob = new Blob([sCsvContent], { type: "text/csv;charset=utf-8;" });
-        var sUrl = URL.createObjectURL(oBlob);
-        var oLink = document.createElement("a");
+        const oBlob = new Blob([sCsvContent], { type: "text/csv;charset=utf-8;" });
+        // Validar tamaño del Blob por si acaso
+        if (oBlob.size === 1 && sCsvContent.length > 1) { // BOM solo tiene 1 byte UTF-8
+          console.error("Error creando el Blob, tamaño inesperado.");
+          throw new Error("Error creating Blob");
+        } else if (oBlob.size === 1) { // Solo BOM, probablemente no hay datos
+          console.warn("El contenido CSV parece vacío (solo BOM).");
+        }
+
+        const sUrl = URL.createObjectURL(oBlob);
+        const oLink = document.createElement("a");
         oLink.href = sUrl;
         oLink.download = "users.csv";
         document.body.appendChild(oLink);
-        oLink.click();
-        document.body.removeChild(oLink);
-        URL.revokeObjectURL(sUrl);
+        oLink.click(); // Simular clic para descargar
+
+        // Limpieza después de un pequeño delay para asegurar inicio de descarga
+        setTimeout(() => {
+          document.body.removeChild(oLink);
+          URL.revokeObjectURL(sUrl);
+          console.log("Recursos de descarga limpiados.");
+        }, 100);
+
       } catch (e) {
-        console.error("Error al crear o descargar el CSV:", e);
-        MessageToast.show(oResourceBundle.getText("errorExportMsg"));
+        console.error("Error final al crear Blob o descargar CSV:", e);
+        fnShowMessage("errorExportMsg", "Error exporting data");
       }
     } // Fin de onExportCsv
-
   }); // Fin de Controller.extend
 }); // Fin de sap.ui.define

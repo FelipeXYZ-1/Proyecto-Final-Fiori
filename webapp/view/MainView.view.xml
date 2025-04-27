@@ -39,8 +39,8 @@
           <Label id="_IDGenLabel6" text="{i18n>firstNameLabel}"/><Input id="_IDGenInput2" value="{userModel>/newUser/firstName}" required="true"/>
           <Label id="_IDGenLabel7" text="{i18n>lastNameLabel}"/><Input id="_IDGenInput3" value="{userModel>/newUser/lastName}" required="true"/>
           <Label id="_IDGenLabel8" text="{i18n>birthDateLabel}"/>
-          <DatePicker id="_IDGenDatePicker" dateValue="{userModel>/newUser/birthDate}" displayFormat="yyyy-MM-dd" valueFormat="yyyy-MM-dd" required="true"/>
-
+          <DatePicker id="_IDGenDatePicker" value="{userModel>/newUser/birthDate}" valueFormat="yyyy-MM-dd"
+                      displayFormat="yyyy-MM-dd" placeholder="YYYY-MM-DD" required="true"/>
           <core:Title id="_IDGenTitle1" text="{i18n>titleOtherInfo}"/>
           <Label id="_IDGenLabel9" text="{i18n>placeBirthLabel}"/>
             <Select id="selectPlaceBirth" selectedKey="{userModel>/newUser/placeBirth}" items="{countries>/}" required="true"> 
@@ -118,8 +118,8 @@
                 <Text id="_IDGenText18" text="{userModel>id}"/>
                 <Text id="_IDGenText19" text="{userModel>typeDocument}"/>
                 <Text id="_IDGenText20" text="{userModel>numberDocument}"/>
-                <Text id="_IDGenText21" text="{parts: ['userModel>firstName', 'userModel>lastName'], formatter: '.formatFullName'}"/> 
-                <Text id="_IDGenText22" text="{path: 'userModel>birthDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'yyyy-MM-dd', strictParsing: true }}"/>
+                <Text id="_IDGenText21" text="{= ${userModel>firstName} + ' ' + ${userModel>lastName} }"/> 
+                <Text id="_IDGenText22" text="{userModel>birthDate}"/>
                 <Text id="_IDGenText23" text="{userModel>placeBirth}"/>
                 <Text id="_IDGenText24" text="{userModel>nationality}"/>
                 <Text id="_IDGenText25" text="{userModel>genre}"/> 

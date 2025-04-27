@@ -32,7 +32,7 @@ sap.ui.define([
         users: [],
         newUser: {
           id: "", typeDocument: "", numberDocument: "",
-          firstName: "", lastName: "", birthDate: null,
+          firstName: "", lastName: "", birthDate: "",
           placeBirth: "", nationality: "", genre: "",
           civilStatus: "", country: "", province: "",
           region: "", address: "", postalCode: "",
