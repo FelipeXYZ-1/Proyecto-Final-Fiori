@@ -1,0 +1,115 @@
+<mvc:View
+  controllerName="retofiori.userforms.controller.MainView"
+  xmlns="sap.m"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns:core="sap.ui.core"
+  xmlns:layout="sap.ui.layout.form"
+  displayBlock="true">
+  <Page id="page" title="{i18n>title}"> 
+    <headerContent>
+        <Label id="_IDGenLabel1" text="{i18n>languageLabel}" class="sapUiSmallMarginEnd"/>
+        <SegmentedButton id="languageSelect" selectedKey="en" selectionChange=".onLanguageSelect">
+             <items>
+                 <SegmentedButtonItem id="_IDGenSegmentedButtonItem" key="en" text="{i18n>langEnglish}" />
+                 <SegmentedButtonItem id="_IDGenSegmentedButtonItem1" key="es" text="{i18n>langSpanish}" />
+             </items>
+             <layoutData><OverflowToolbarLayoutData id="_IDGenOverflowToolbarLayoutData" priority="NeverOverflow"/></layoutData>
+        </SegmentedButton>
+        <ToolbarSpacer id="_IDGenToolbarSpacer" /> 
+        <Label id="_IDGenLabel2" text="{i18n>darkModeLabel}" class="sapUiSmallMarginEnd"/>
+        <Switch id="themeSwitch" state="false" customTextOn=" " customTextOff=" " change=".onThemeSwitchChange">
+            <layoutData><OverflowToolbarLayoutData id="_IDGenOverflowToolbarLayoutData1" priority="NeverOverflow"/></layoutData>
+        </Switch>
+    </headerContent>
+    <content>
+      <Panel id="_IDGenPanel1" headerText="{i18n>panelUserForm}">
+        <layout:SimpleForm
+          id="userForm" editable="true" layout="ResponsiveGridLayout"
+          labelSpanL="4" labelSpanM="2" columnsL="2" columnsM="1">
+          
+          <core:Title id="_IDGenTitle" text="{i18n>titlePersonalInfo}"/>
+          <Label id="_IDGenLabel3" text="{i18n>idLabel}"/><Input id="_IDGenInput" value="{userModel>/newUser/id}" required="true"/>
+          <Label id="_IDGenLabel4" text="{i18n>typeDocumentLabel}"/>
+          <Select id="_IDGenSelect" selectedKey="{userModel>/newUser/typeDocument}" items="{list>/typeDocuments}">
+            <items><core:Item id="_IDGenItem" key="{list>key}" text="{list>text}"/></items>
+          </Select>
+          <Label id="_IDGenLabel5" text="{i18n>numberDocumentLabel}"/><Input id="_IDGenInput1" value="{userModel>/newUser/numberDocument}" required="true"/>
+          <Label id="_IDGenLabel6" text="{i18n>firstNameLabel}"/><Input id="_IDGenInput2" value="{userModel>/newUser/firstName}" required="true"/>
+          <Label id="_IDGenLabel7" text="{i18n>lastNameLabel}"/><Input id="_IDGenInput3" value="{userModel>/newUser/lastName}" required="true"/>
+          <Label id="_IDGenLabel8" text="{i18n>birthDateLabel}"/>
+          <DatePicker id="_IDGenDatePicker" dateValue="{userModel>/newUser/birthDate}" displayFormat="yyyy-MM-dd" valueFormat="yyyy-MM-dd" required="true"/>
+
+          <core:Title id="_IDGenTitle1" text="{i18n>titleOtherInfo}"/>
+          <Label id="_IDGenLabel9" text="{i18n>placeBirthLabel}"/><Input id="_IDGenInput4" value="{userModel>/newUser/placeBirth}" required="true"/>
+          <Label id="_IDGenLabel10" text="{i18n>nationalityLabel}"/><Input id="_IDGenInput5" value="{userModel>/newUser/nationality}" required="true"/>
+          <Label id="_IDGenLabel11" text="{i18n>genreLabel}"/>
+          <Select id="_IDGenSelect1" selectedKey="{userModel>/newUser/genre}" items="{list>/genres}">
+             <items><core:Item id="_IDGenItem1" key="{list>key}" text="{list>text}"/></items>
+          </Select>
+          <Label id="_IDGenLabel12" text="{i18n>civilStatusLabel}"/>
+          <Select id="_IDGenSelect2" selectedKey="{userModel>/newUser/civilStatus}" items="{list>/civilStatuses}">
+             <items><core:Item id="_IDGenItem2" key="{list>key}" text="{list>text}"/></items>
+          </Select>
+
+          <core:Title id="_IDGenTitle2" text="{i18n>titleAddressInfo}"/>
+          <Label id="_IDGenLabel13" text="{i18n>countryLabel}"/>
+          <Select id="selectCountry" selectedKey="{userModel>/newUser/country}" items="{countries>/}">
+            <items><core:Item id="countryItem" key="{countries>Code}" text="{countries>Name}"/></items>
+          </Select>
+          <Label id="_IDGenLabel14" text="{i18n>provinceLabel}"/><Input id="_IDGenInput6" value="{userModel>/newUser/province}" required="true"/>
+          <Label id="_IDGenLabel15" text="{i18n>regionLabel}"/><Input id="_IDGenInput7" value="{userModel>/newUser/region}" required="true"/>
+          <Label id="_IDGenLabel16" text="{i18n>addressLabel}"/><Input id="_IDGenInput8" value="{userModel>/newUser/address}" required="true"/>
+          <Label id="_IDGenLabel17" text="{i18n>postalCodeLabel}"/><Input id="_IDGenInput9" value="{userModel>/newUser/postalCode}" required="true"/>
+
+          <core:Title id="_IDGenTitle3" text="{i18n>titleContactInfo}"/>
+          <Label id="_IDGenLabel18" text="{i18n>phoneNumberLabel}"/><Input id="_IDGenInput10" value="{userModel>/newUser/phoneNumber}" required="true"/>
+          <Label id="_IDGenLabel19" text="{i18n>emailLabel}"/><Input id="_IDGenInput11" value="{userModel>/newUser/email}" type="Email" required="true"/>
+
+        </layout:SimpleForm>
+        <HBox id="_IDGenHBox" class="sapUiSmallMarginTop" width="100%" justifyContent="SpaceBetween">
+          <Button id="_IDGenButton" text="{i18n>addUserButton}" type="Accept" press=".onAddUser" class="sapUiSmallMarginTop"/>
+          <Button id="_IDGenButton1" icon="sap-icon://download" text="{i18n>exportCsvButton}" type="Emphasized" press=".onExportCsv" class="sapUiSmallMarginLeft sapUiSmallMarginTop"/>
+        </HBox>
+      </Panel>
+
+      <Panel id="_IDGenPanel" headerText="{i18n>panelUserList}" class="sapUiSmallMarginTop">
+        <headerToolbar>
+          <Toolbar id="_IDGenToolbar">
+            <Title id="_IDGenTitle4" text="{i18n>registeredUsersTitle}" level="H4"/>
+            <ToolbarSpacer id="_IDGenToolbarSpacer1" />
+            <SearchField id="searchUsers" placeholder="{i18n>searchPlaceholder}" liveChange=".onFilterUsers"/>
+          </Toolbar>
+        </headerToolbar>
+        <Table id="tblUsers" items="{userModel>/users}">
+          <columns>
+            <Column id="_IDGenColumn"><Text id="_IDGenText" text="{i18n>idCol}"/></Column>
+            <Column id="_IDGenColumn1"><Text id="_IDGenText1" text="{i18n>typeDocCol}"/></Column>
+            <Column id="_IDGenColumn2"><Text id="_IDGenText2" text="{i18n>numberDocCol}"/></Column>
+            <Column id="_IDGenColumn3"><Text id="_IDGenText3" text="{i18n>fullNameCol}"/></Column>
+            <Column id="_IDGenColumn4"><Text id="_IDGenText4" text="{i18n>birthDateCol}"/></Column>
+            <Column id="_IDGenColumn5"><Text id="_IDGenText5" text="{i18n>placeBirthCol}"/></Column>
+            <Column id="_IDGenColumn6"><Text id="_IDGenText6" text="{i18n>nationalityCol}"/></Column>
+            <Column id="_IDGenColumn7"><Text id="_IDGenText7" text="{i18n>genreCol}"/></Column>
+            <Column id="_IDGenColumn8"><Text id="_IDGenText8" text="{i18n>civilStatusCol}"/></Column>
+            <Column id="_IDGenColumn9"><Text id="_IDGenText9" text="{i18n>countryCol}"/></Column>
+            <Column id="_IDGenColumn10"><Text id="_IDGenText10" text="{i18n>provinceCol}"/></Column>
+            <Column id="_IDGenColumn11"><Text id="_IDGenText11" text="{i18n>regionCol}"/></Column>
+            <Column id="_IDGenColumn12"><Text id="_IDGenText12" text="{i18n>addressCol}"/></Column>
+            <Column id="_IDGenColumn13"><Text id="_IDGenText13" text="{i18n>postalCodeCol}"/></Column>
+            <Column id="_IDGenColumn14"><Text id="_IDGenText14" text="{i18n>phoneCol}"/></Column>
+            <Column id="_IDGenColumn15"><Text id="_IDGenText15" text="{i18n>emailCol}"/></Column>
+            <Column id="_IDGenColumn16"><Text id="_IDGenText16" text="{i18n>actionsCol}"/></Column>
+          </columns>
+          <items>
+            <ColumnListItem id="_IDGenColumnListItem">
+              <cells>
+                <Text id="_IDGenText17" text="{userModel>id}"/>
+                 <Button id="_IDGenButton2" icon="sap-icon://delete" type="Reject" tooltip="{i18n>deleteUserButton}" press=".onDeleteUser"/>
+              </cells>
+            </ColumnListItem>
+          </items>
+        </Table>
+      </Panel>
+    </content>
+  </Page>
+</mvc:View>
