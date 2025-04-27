@@ -30,8 +30,10 @@
           <core:Title id="_IDGenTitle" text="{i18n>titlePersonalInfo}"/>
           <Label id="_IDGenLabel3" text="{i18n>idLabel}"/><Input id="_IDGenInput" value="{userModel>/newUser/id}" required="true"/>
           <Label id="_IDGenLabel4" text="{i18n>typeDocumentLabel}"/>
-          <Select id="_IDGenSelect" selectedKey="{userModel>/newUser/typeDocument}" items="{list>/typeDocuments}">
-            <items><core:Item id="_IDGenItem" key="{list>key}" text="{list>text}"/></items>
+          <Select id="_IDGenSelect" selectedKey="{userModel>/newUser/typeDocument}" items="{list>/typeDocuments}" required="true" >
+            <items>
+              <core:Item id="_IDGenItem" key="{list>key}" text="{list>text}"/>
+            </items>
           </Select>
           <Label id="_IDGenLabel5" text="{i18n>numberDocumentLabel}"/><Input id="_IDGenInput1" value="{userModel>/newUser/numberDocument}" required="true"/>
           <Label id="_IDGenLabel6" text="{i18n>firstNameLabel}"/><Input id="_IDGenInput2" value="{userModel>/newUser/firstName}" required="true"/>
@@ -40,21 +42,31 @@
           <DatePicker id="_IDGenDatePicker" dateValue="{userModel>/newUser/birthDate}" displayFormat="yyyy-MM-dd" valueFormat="yyyy-MM-dd" required="true"/>
 
           <core:Title id="_IDGenTitle1" text="{i18n>titleOtherInfo}"/>
-          <Label id="_IDGenLabel9" text="{i18n>placeBirthLabel}"/><Input id="_IDGenInput4" value="{userModel>/newUser/placeBirth}" required="true"/>
+          <Label id="_IDGenLabel9" text="{i18n>placeBirthLabel}"/>
+            <Select id="selectPlaceBirth" selectedKey="{userModel>/newUser/placeBirth}" items="{countries>/}" required="true"> 
+              <items>
+                <core:Item id="_IDGenItem3" key="{countries>Code}" text="{countries>Name}"/> 
+              </items>
+            </Select>
           <Label id="_IDGenLabel10" text="{i18n>nationalityLabel}"/><Input id="_IDGenInput5" value="{userModel>/newUser/nationality}" required="true"/>
           <Label id="_IDGenLabel11" text="{i18n>genreLabel}"/>
-          <Select id="_IDGenSelect1" selectedKey="{userModel>/newUser/genre}" items="{list>/genres}">
-             <items><core:Item id="_IDGenItem1" key="{list>key}" text="{list>text}"/></items>
+          <Select id="_IDGenSelect1" selectedKey="{userModel>/newUser/genre}" items="{list>/genres}" required="true">
+            <items>
+              <core:Item id="_IDGenItem1" key="{list>key}" text="{list>text}"/>
+            </items>
           </Select>
           <Label id="_IDGenLabel12" text="{i18n>civilStatusLabel}"/>
-          <Select id="_IDGenSelect2" selectedKey="{userModel>/newUser/civilStatus}" items="{list>/civilStatuses}">
-             <items><core:Item id="_IDGenItem2" key="{list>key}" text="{list>text}"/></items>
+          <Select id="_IDGenSelect2" selectedKey="{userModel>/newUser/civilStatus}" items="{list>/civilStatuses}" required="true">
+            <items>
+              <core:Item id="_IDGenItem2" key="{list>key}" text="{list>text}"/>
+            </items>
           </Select>
-
           <core:Title id="_IDGenTitle2" text="{i18n>titleAddressInfo}"/>
           <Label id="_IDGenLabel13" text="{i18n>countryLabel}"/>
-          <Select id="selectCountry" selectedKey="{userModel>/newUser/country}" items="{countries>/}">
-            <items><core:Item id="countryItem" key="{countries>Code}" text="{countries>Name}"/></items>
+          <Select id="selectCountry" selectedKey="{userModel>/newUser/country}" items="{countries>/}" required="true">
+            <items>
+              <core:Item id="countryItem" key="{countries>Code}" text="{countries>Name}"/>
+            </items>
           </Select>
           <Label id="_IDGenLabel14" text="{i18n>provinceLabel}"/><Input id="_IDGenInput6" value="{userModel>/newUser/province}" required="true"/>
           <Label id="_IDGenLabel15" text="{i18n>regionLabel}"/><Input id="_IDGenInput7" value="{userModel>/newUser/region}" required="true"/>
@@ -103,8 +115,23 @@
           <items>
             <ColumnListItem id="_IDGenColumnListItem">
               <cells>
-                <Text id="_IDGenText17" text="{userModel>id}"/>
-                 <Button id="_IDGenButton2" icon="sap-icon://delete" type="Reject" tooltip="{i18n>deleteUserButton}" press=".onDeleteUser"/>
+                <Text id="_IDGenText18" text="{userModel>id}"/>
+                <Text id="_IDGenText19" text="{userModel>typeDocument}"/>
+                <Text id="_IDGenText20" text="{userModel>numberDocument}"/>
+                <Text id="_IDGenText21" text="{parts: ['userModel>firstName', 'userModel>lastName'], formatter: '.formatFullName'}"/> 
+                <Text id="_IDGenText22" text="{path: 'userModel>birthDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'yyyy-MM-dd', strictParsing: true }}"/>
+                <Text id="_IDGenText23" text="{userModel>placeBirth}"/>
+                <Text id="_IDGenText24" text="{userModel>nationality}"/>
+                <Text id="_IDGenText25" text="{userModel>genre}"/> 
+                <Text id="_IDGenText26" text="{userModel>civilStatus}"/> 
+                <Text id="_IDGenText27" text="{userModel>country}"/> 
+                <Text id="_IDGenText28" text="{userModel>province}"/>
+                <Text id="_IDGenText29" text="{userModel>region}"/>
+                <Text id="_IDGenText30" text="{userModel>address}"/>
+                <Text id="_IDGenText31" text="{userModel>postalCode}"/>
+                <Text id="_IDGenText32" text="{userModel>phoneNumber}"/>
+                <Text id="_IDGenText33" text="{userModel>email}"/>
+                <Button id="_IDGenButton2" icon="sap-icon://delete" type="Reject" tooltip="{i18n>deleteUserButton}" press=".onDeleteUser"/>
               </cells>
             </ColumnListItem>
           </items>
